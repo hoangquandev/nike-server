@@ -1,2 +1,2 @@
-import "babel-core/register";
+import "babel/register";
 exports = module.exports = require("./server");

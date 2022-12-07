@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/register": "^7.18.9",
     "babel": "^6.23.0",
     "babel-core": "^6.26.3",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -44,7 +45,7 @@
     "validator": "^13.1.17"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9",
+    "@babel/core": "^7.20.5",
     "@types/babel-core": "^6.25.7",
     "env-cmd": "^10.1.0",
     "nodemon": "^2.0.4"
