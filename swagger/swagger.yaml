@@ -1,0 +1,698 @@
+swagger: "2.0.0"
+info:
+  description: "Nike API"
+  version: "1.0.0"
+  title: "Nike API"
+host: "https://nike-test-backend.vercel.app"
+tags:
+  # - name: "QuanLyDatVe"
+  # externalDocs:
+  #   description: "Find out more"
+  #   url: "http://swagger.io"
+  - name: "user"
+  - name: "cart"
+  - name: "product"
+definitions:
+  User:
+    type: object
+    description: User of nike
+    properties:
+      name:
+        type: string
+        description: name of user
+      email:
+        type: string
+        description: email of user
+      password:
+        type: string
+        description: password of user
+      age:
+        type: number
+        description: age of user
+    example:
+      name: baodeptrai
+      email: bao@gmail.com
+      password: "123"
+      age: 123
+      token: dasdasdasdasda
+  LoginResquest:
+    type: object
+    properties:
+      email:
+        type: string
+        description: name of user
+      password:
+        type: string
+        description: email of user
+  LoginResponse:
+    properties:
+      user:
+        type: object
+        properties:
+          name:
+            type: string
+          email:
+            type: string
+          age:
+            type: number
+          productsFavorite:
+            type: array
+          token:
+            type: string
+  GetDetailResponse:
+    properties:
+      user:
+        type: object
+        properties:
+          name:
+            type: string
+          email:
+            type: string
+          age:
+            type: number
+          productsFavorite:
+            type: array
+  DeleteRequest:
+    type: object
+    properties:
+      _id:
+        type: string
+  UpdateRequest:
+    type: object
+    properties:
+      name:
+        type: string
+        description: name of user
+      email:
+        type: string
+        description: email of user
+      password:
+        type: string
+        description: password of user
+      age:
+        type: number
+        description: age of user
+  CreateRequest:
+    type: object
+    properties:
+      name:
+        type: string
+        description: name of user
+      email:
+        type: string
+        description: email of user
+      password:
+        type: string
+        description: password of user
+      age:
+        type: number
+        description: age of user
+      userType:
+        type: string
+        enum:
+          - user
+          - admin
+  AddFavoriteRequest:
+    type: object
+    properties:
+      productsFavorite:
+        type: array
+        description: array favorite of user
+        items:
+          type: object
+          properties:
+            productId:
+              type: string
+            name:
+              type: string
+            price:
+              type: number
+            size:
+              type: string
+            img:
+              type: string
+            color:
+              type: string
+            quantity:
+              type: number
+            message:
+              type: string
+            sizes:
+              type: array
+              items:
+                size:
+                  type: string
+  Cart:
+    type: object
+    description: Cart of user
+    properties:
+      userOrder:
+        type: string
+        description: id of userOrder
+      status:
+        type: number
+        description: status of cart
+      modifiedOn:
+        type: date
+        description: modifiedOn of cart
+      products:
+        type: array
+        description: products of cart
+        items:
+          type: object
+          properties:
+            productId:
+              type: string
+            quantity:
+              type: number
+            name:
+              type: string
+            price:
+              type: number
+            size:
+              type: string
+            img:
+              type: string
+            color:
+              type: string
+  CartUser:
+    type: object
+    description: Cart of only user (User buy)
+    properties:
+      userOrder:
+        type: string
+        description: id of userOrder
+      status:
+        type: number
+        description: status of cart
+      modifiedOn:
+        type: date
+        description: modifiedOn of cart
+      products:
+        type: array
+        description: products of cart
+        items:
+          type: object
+          properties:
+            productId:
+              type: string
+            quantity:
+              type: number
+            name:
+              type: string
+            price:
+              type: number
+            size:
+              type: string
+            img:
+              type: string
+            color:
+              type: string
+  CreateCart:
+    type: object
+    description: Create new cart
+    properties:
+      products:
+        type: array
+        description: products of cart
+        items:
+          type: object
+          properties:
+            quantity:
+              type: number
+            name:
+              type: string
+            price:
+              type: number
+            size:
+              type: string
+            img:
+              type: string
+            color:
+              type: string
+  DeleteCart:
+    type: object
+    properties:
+      _id:
+        type: string
+  UpdateStatusCart:
+    type: object
+    properties:
+      status:
+        type: number
+        description: status of cart
+  Product:
+    type: object
+    description: Product
+    properties:
+      name:
+        type: string
+        description: name of product
+      gender:
+        type: string
+        description: the product for this gender
+      typeProduct:
+        type: string
+        description: product category
+      description:
+        type: string
+        description: product details description
+      message:
+        type: string
+        description: product short description
+      color:
+        type: number
+        description: number of color show on FE
+      price:
+        type: number
+        description: product pricing
+      img:
+        type: string
+        description: product main thumbnail
+      sizes:
+        type: array
+        description: product sizes
+        items:
+          type: object
+          properties:
+            size:
+              type: string
+              description: size of the product
+      imgDetails:
+        type: array
+        description: product colors and its gallery
+        items:
+          type: object
+          properties:
+            color:
+              type: string
+              description: color name
+            imgs:
+              type: array
+              description: images for this color
+              items:
+                type: object
+                properties:
+                  img:
+                    type: string
+                    description: image path
+      userCreated:
+        type: string
+        description: ref for user who created this product
+      status:
+        type: number
+        description: 0 not public - 1 public
+paths:
+  # get all USER with admin
+  /users:
+    get:
+      tags:
+        - "user"
+      description: "Returns list users"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          description: "access token"
+          type: string
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/User"
+        "401":
+          description: "Not authorized to access this resource"
+      security:
+        - api_key: []
+  /users/login: # login with user
+    post:
+      tags:
+        - "user"
+      description: "login with user"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "body"
+          in: body
+          required: true
+          description: "body"
+          schema:
+            $ref: "#/definitions/LoginResquest"
+      responses:
+        "200":
+          description: "login success"
+        "400":
+          description: "login fail"
+      security:
+        - petstore_auth:
+            - "write:user"
+            - "read:user"
+  /users/{id}: #get user by id
+    get:
+      tags:
+        - "user"
+      description: "Get Info user with id"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          type: string
+        - name: "id"
+          in: "path"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "Get Detail success"
+        "401":
+          description: "Not authorized to access this resource"
+      security:
+        - api_key: []
+  /users/delete: #delete user
+    delete:
+      tags:
+        - "user"
+      description: "Delete user with id"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          type: string
+        - name: "id"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/DeleteRequest"
+      responses:
+        "200":
+          description: "Delete success"
+        "401":
+          description: "Not authorized to access this resource"
+      security:
+        - api_key: []
+  /users/update: #delete user
+    put:
+      tags:
+        - "user"
+      description: "Update user with id"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          type: string
+        - name: "Body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateRequest"
+      responses:
+        "200":
+          description: "Update success"
+        "401":
+          description: "Not authorized to access this resource"
+  /users/create: #create account với admin send token user ko cần
+    post:
+      tags:
+        - "user"
+      description: "create user admin send token user not token"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: false
+          type: string
+        - name: "Body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/CreateRequest"
+      responses:
+        "200":
+          description: "Update success"
+        "401":
+          description: "Not authorized to access this resource"
+  /users/addUpdateFavorite:
+    post:
+      tags:
+        - "user"
+      description: "add and update favorite"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: false
+          type: string
+        - name: "Body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/AddFavoriteRequest"
+      responses:
+        "200":
+          description: "addUpdateFavorite success"
+        "401":
+          description: "Not authorized to access this resource"
+  /users/updateAdmin/{id}:
+    put:
+      tags:
+        - "user"
+      description: "update user with admin"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: false
+          type: string
+        - name: "id"
+          in: "path"
+          required: true
+          type: string
+        - name: "Body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateRequest"
+      responses:
+        "200":
+          description: "addUpdateFavorite success"
+        "401":
+          description: "Not authorized to access this resource"
+  /cart:
+    get:
+      tags:
+        - "cart"
+      description: "Show cart with user"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "Ok"
+        "500":
+          description: "Show fail"
+        "401":
+          description: "Not authorized to access this resource"
+
+      security:
+        - api_key: []
+  /cart/create:
+    post:
+      tags:
+        - "cart"
+      description: "Create New Cart by User"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          type: string
+        - name: "Body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/CreateCart"
+      responses:
+        "200":
+          description: "Create success"
+        "401":
+          description: "Not authorized to access this resource"
+  /cart/delete:
+    delete:
+      tags:
+        - "cart"
+      description: "Delete cart with id"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          type: string
+        - name: "id"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/DeleteCart"
+      responses:
+        "200":
+          description: "Delete success"
+        "404":
+          description: "Delete fail"
+        "401":
+          description: "Not authorized to access this resource"
+      security:
+        - api_key: []
+  /cart/updateStatus/{id}:
+    put:
+      tags:
+        - "cart"
+      description: "update cart with admin"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          type: string
+        - name: "id"
+          in: "path"
+          required: true
+          type: string
+        - name: "Satus"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateStatusCart"
+      responses:
+        "200":
+          description: "Update Status success"
+        "400":
+          description: "Update Status fail"
+        "401":
+          description: "Not authorized to access this resource"
+  /product:
+    # product list
+    get:
+      tags:
+        - "product"
+      description: "Return products list"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Product"
+        "404":
+          description: "Not found"
+  /product/{id}:
+    get:
+      tags:
+        - "product"
+      description: "Return product by ID"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Product"
+        "404":
+          description: "Not found"
+  /product/create:
+    post:
+      tags:
+        - "product"
+      description: "Create new product"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          description: "access token"
+          type: string
+      responses:
+        "201":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Product"
+        "400":
+          description: "creating new product failed"
+        "401":
+          description: "Not authorized to access this resource"
+  /product/update:
+    put:
+      tags:
+        - "product"
+      description: "Update product"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          description: "access token"
+          type: string
+        - name: "Body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/Product"
+      responses:
+        "201":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Product"
+        "400":
+          description: "creating new product failed"
+        "401":
+          description: "Not authorized to access this resource"
+  /product/delete:
+    delete:
+      tags:
+        - "product"
+      description: "Delete product"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          description: "access token"
+          type: string
+        - name: "id"
+          in: "body"
+          required: true
+          description: "product id"
+          type: string
+          schema:
+            $ref: "#/definitions/DeleteRequest"
+      responses:
+        "200":
+          description: "Delete success"
+        "404":
+          description: "Delete fail"
+        "401":
+          description: "Not authorized to access this resource"
